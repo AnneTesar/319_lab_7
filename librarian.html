@@ -1,0 +1,39 @@
+	<div ng-controller="myCtrl" ng-init="initLibrary()">
+		<h3>Librarian View</h3>
+		
+		<table border="1" >
+			<tr>
+				<th>{{library[0].name}}</th>
+				<th>{{library[1].name}}</th>
+				<th>{{library[2].name}}</th>
+				<th>{{library[3].name}}</th>
+			</tr>
+			<tr ng-repeat="book in library[0].books">
+				<td>{{book.bookName}}</td>
+				<td>{{}}</td>
+			</tr>
+		</table>
+		
+				
+		<table border="1" cellpadding="5" cellspacing="5">
+			<tr ng-repeat="shelf in library">
+				<td>{{shelf.name}}</td>
+				<td ng-repeat="book in shelf.books" ng-style="color(book.presence)" ng-click="bookDetails(book)">{{book.bookName}}</td>
+			</tr>
+		</table>
+		
+		<div id="addNewBook">
+			<h4>Add a New Book</h4>
+			<label>Book Name:</label>
+			<input ng-model="newBook.bookName">
+			<br>
+			<label>Which Shelf?</label>
+			<select ng-model="newBook.shelf" ng-options="library.indexOf(shelf) as shelf.name for shelf in library"></select>
+			<br>
+			<label>Reference Book?</label>
+			<input type="checkbox" ng-true-value="'R'" ng-false-value="'O'" ng-model="newBook.type">
+			<br>
+			<button ng-click="addBook()">Add Book</button>
+		</div>
+		
+	 </div>
