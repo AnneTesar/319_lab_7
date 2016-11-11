@@ -1,0 +1,40 @@
+	<div >
+		<h3>Student View</h3>
+				
+		<table border="1" cellpadding="5" cellspacing="5">
+			<tr ng-repeat="shelf in library">
+				<td>{{shelf.name}}</td>
+				<td ng-repeat="book in shelf.books" ng-style="color(book.presence)" ng-click="bookDetails(book)">{{book.bookName}}</td>
+			</tr>
+		</table>
+		
+		<br>
+		
+		<div id="userBooks">
+		<table border="1" cellpadding="5" cellspacing="5">
+			<tr>
+				<th>Your Books:</th>
+			</tr>
+			<tr ng-repeat="book in userBooks">
+				<td>{{book.bookName}}</td>
+			</tr>
+		</table>
+		
+		<br>
+			
+			<label>Return Book</label>
+			<select ng-model="returning.book" ng-options="book.bookName for book in userBooks"></select>
+			<button ng-click="returnBook()">Return</button>
+			<br>
+			<label>Check Out Book</label>
+			<select ng-model="shelfIndex.num" ng-options="library.indexOf(shelf) as shelf.name for shelf in library"></select>
+			<select ng-model="checkOut.book" ng-options="book.bookName for book in library[shelfIndex.num].books"></select>
+			<button ng-click="checkoutBook()">Check Out</button>
+			
+
+		</div>
+		
+		<br>
+		<button ng-click="logout()">Logout</button>
+		
+	 </div>

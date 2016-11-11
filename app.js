@@ -7,36 +7,76 @@ app.config(function($routeProvider) {
     .when("/librarian", {
         templateUrl : "librarian.html"
     })
-    .when("/green", {
-        templateUrl : "green.htm"
+    .when("/student", {
+        templateUrl : "student.html"
     })
-    .when("/blue", {
-        templateUrl : "blue.htm"
-    });
 });
 
 
-app.controller('myCtrl', function($scope, $location, $http) {
-	
+app.controller('myCtrl', function($scope, $location, $http, $rootScope) {
+	$rootScope.username;
+	var password;
+	$scope.shelfIndex = {};
+	$scope.checkOut = {};
+	$scope.returning = {};
 	
 	$scope.login = function() {
-		var username = document.getElementById("username").value;
-		var password = document.getElementById("password").value;
+		$rootScope.username = document.getElementById("username").value;
+		password = document.getElementById("password").value;
 		
-		if ((username == "admin") && (password == "admin")) {
+		if (($rootScope.username == "admin") && (password == "admin")) {
 			console.log("logging in as librarian");
 			$location.path('/librarian');
 		}
-		else if (username.charAt(0).toLowerCase() != 'u') {
+		else if ($rootScope.username.charAt(0).toLowerCase() != 'u') {
 			alert("Username or Password is incorrect!");
 		}
 		else {
-			//studentView(library, username);
 			console.log("logging in as student");
+			$location.path('/student');
+			getUsersBooks();
 		}
 	}
 	
+	getUsersBooks = function() {
+		$rootScope.userBooks = [];
+		for (i = 0; i < $scope.library.length; i++) {
+			for (j = 0; j < $scope.library[i].books.length; j++) {
+				if ($scope.library[i].books[j].borrowedBy == $rootScope.username) {
+					$rootScope.userBooks.push($scope.library[i].books[j]);
+				}
+			}
+		}
+		console.log($rootScope.userBooks);
+	}
+	
+	$scope.checkoutBook = function() {
+		if ($scope.checkOut.book.presence == 0) {
+			alert("This book is not available." );
+		}
+		else if ($scope.checkOut.book.type == 'R') {
+			alert("You cannot check out a reference book.");
+		}
+		else if ($rootScope.userBooks.length >= 2) {
+			alert("You already have two books checked out. Please return one before checking out another.");
+		}
+		else {
+			$scope.checkOut.book.presence = 0;
+			$scope.checkOut.book.borrowedBy = $rootScope.username;
+		}
+		getUsersBooks();
+	}
+	
+	$scope.returnBook = function() {
+		console.log($scope.returning.book);
+		var index = $rootScope.userBooks.indexOf($scope.returning.book);
+		$rootScope.userBooks.splice(index, 1);
+		$scope.returning.book.presence = 1;
+		$scope.returning.book.borrowedBy = "";
+	}
+	
 	$scope.bookDetails = function(book) {
+		console.log($rootScope.username);
 		console.log(book);
 		var string = book.bookName;
 		
@@ -69,13 +109,15 @@ app.controller('myCtrl', function($scope, $location, $http) {
 		console.log($scope.newBook);
 		var book = {bookId:"", bookName:$scope.newBook.bookName, type:$scope.newBook.type, presence:1, borrowedBy:""};
 		$scope.library[$scope.newBook.shelf].books.push(book);
-		//$scope.$apply();
 	}
 	
+	$scope.logout = function() {
+		$location.path('/');
+	}
 	
 	$scope.color = function(val) {
 		if (val == 1) {
-			return {'background-color': 'green'};
+			return {'background-color': 'white'};
 		}
 		else {
 			return {'background-color': 'red'};
@@ -83,7 +125,6 @@ app.controller('myCtrl', function($scope, $location, $http) {
 	}
 	
 	$scope.initLibrary = function() {
-	
 		var booksArt = [{bookId:0, bookName:"B0", type:"R", presence:1, borrowedBy:""},
 						{bookId:4, bookName:"B4", type:"O", presence:1, borrowedBy:""},
 						{bookId:8, bookName:"B8", type:"O", presence:1, borrowedBy:""},
@@ -118,8 +159,8 @@ app.controller('myCtrl', function($scope, $location, $http) {
 							   {bookId:23, bookName:"B21", type:"O", presence:1, borrowedBy:""}];
 		var shelfLiterature = {name:"Literature", books:booksLiterature};
 		
-		$scope.library = [shelfArt, shelfScience, shelfSport, shelfLiterature];
-		console.log($scope.library);
+		$rootScope.library = [shelfArt, shelfScience, shelfSport, shelfLiterature];
+		console.log($rootScope.library);
 		
 	};
 });

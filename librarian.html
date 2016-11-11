@@ -1,19 +1,5 @@
-	<div ng-controller="myCtrl" ng-init="initLibrary()">
+	<div >
 		<h3>Librarian View</h3>
-		
-		<table border="1" >
-			<tr>
-				<th>{{library[0].name}}</th>
-				<th>{{library[1].name}}</th>
-				<th>{{library[2].name}}</th>
-				<th>{{library[3].name}}</th>
-			</tr>
-			<tr ng-repeat="book in library[0].books">
-				<td>{{book.bookName}}</td>
-				<td>{{}}</td>
-			</tr>
-		</table>
-		
 				
 		<table border="1" cellpadding="5" cellspacing="5">
 			<tr ng-repeat="shelf in library">
@@ -35,5 +21,9 @@
 			<br>
 			<button ng-click="addBook()">Add Book</button>
 		</div>
+		
+		
+		<br>
+		<button ng-click="logout()">Logout</button>
 		
 	 </div>
